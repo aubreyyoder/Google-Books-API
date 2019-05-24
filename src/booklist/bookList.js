@@ -8,7 +8,7 @@ class BookList extends React.Component {
     return (
       <div className="booklist">
         <BookImage />
-        <BookInfo price={this.props.price} author={this.props.author} />
+        <BookInfo handleSearch={book => this.searchBook(book)} />
       </div>
     );
   }
