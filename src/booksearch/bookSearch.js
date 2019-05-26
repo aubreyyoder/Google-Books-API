@@ -7,22 +7,25 @@ class Booksearch extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      books: []
+      books: [],
+      error: ""
     };
   }
-
   componentDidMount() {
-    const url = "https://www.googleapis.com/books/v1/volumes";
-    const options = {
-      method: "GET",
-      headers: {
-        q: "",
-        filter: "",
-        printType: "",
-        key: "AIzaSyDFVzV17KZPMnzwTAt8ftgH_DUlWoKtIv8"
-      }
-    };
-    fetch(url, options)
+    this.queryMethod({ search: "dog", printType: "", filter: "" });
+  }
+
+  queryMethod(evt) {
+    const { printType, search, filter } = evt;
+    let baseUrl = `https://www.googleapis.com/books/v1/volumes?q=${search}`;
+    if (printType.length > 0) {
+      baseUrl = baseUrl + `&printType=${printType}`;
+    }
+    if (filter.length > 0) {
+      baseUrl = baseUrl + `&filter=${filter}`;
+    }
+
+    fetch(baseUrl)
       .then(res => {
         if (!res.ok) {
           throw new Error("Something went wrong! Please try again later!");
@@ -31,8 +34,9 @@ class Booksearch extends React.Component {
       })
       .then(res => res.json())
       .then(data => {
+        console.log(data);
         this.setState({
-          book: data,
+          books: data.items,
           error: null
         });
       })
@@ -43,16 +47,20 @@ class Booksearch extends React.Component {
       });
   }
 
-  searchBook(book) {
-    this.setState({
-      books: [...this.state.books, book]
-    });
+  searchBook(data) {
+    this.queryMethod(data);
   }
+
   render() {
     return (
       <div className="booksearch">
-        <SearchBar />
-        <BookList handleSearch={book => this.searchBook(book)} />
+        <SearchBar bookSearch={book => this.searchBook(book)} />
+        <BookList books={this.state.books} />
+        {this.state.error ? (
+          <div>
+            <h2 style={{ color: "red" }}> Something wrong happened</h2>
+          </div>
+        ) : null}
       </div>
     );
   }

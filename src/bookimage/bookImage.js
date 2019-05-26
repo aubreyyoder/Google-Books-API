@@ -1,9 +1,14 @@
 import React from "react";
 import "./bookImage.css";
+import { Fragment } from "react";
 
 class BookImage extends React.Component {
   render() {
-    return <div className="bookimage" />;
+    return (
+      <Fragment>
+        <img src={this.props.image} />
+      </Fragment>
+    );
   }
 }
 
