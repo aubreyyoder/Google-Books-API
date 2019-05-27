@@ -11,9 +11,6 @@ class Booksearch extends React.Component {
       error: ""
     };
   }
-  componentDidMount() {
-    this.queryMethod({ search: "dog", printType: "", filter: "" });
-  }
 
   queryMethod(evt) {
     const { printType, search, filter } = evt;
